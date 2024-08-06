@@ -1,0 +1,97 @@
+@model IEnumerable<MyTodoApp.Models.Todo>
+
+@{
+    ViewData["Title"] = "Todos";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-pzjw8f+ua7Kw1TIq2PH6jF6vA76P2jiIF5Xtd2piMrruTwlg5ep7v8aLOGkDvhZY" crossorigin="anonymous" />
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="my-4">Todos</h1>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    @* @Html.DisplayNameFor(model => model.First().Text) *@
+                    Task
+                </th>
+                <th>
+                    @* @Html.DisplayNameFor(model => model.First().Completed)  *@
+                    Status
+                        '(click on the button below to change status)'
+
+                </th>
+                <th class="text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @{
+                            var truncatedText = item.Text.Length > 50 ? item.Text.Substring(0, 50) + "..." : item.Text;
+                        }
+                        @truncatedText
+                    </td>
+                    <td class="text-left">
+                        <form asp-action="ToggleCompleted" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm @(item.Completed ? "btn-success" : "btn-secondary")">
+                                @(item.Completed ? "Completed" : "Incomplete")
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-left">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewModal-@item.Id">View</button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="viewModal-@item.Id" tabindex="-1" aria-labelledby="viewModalLabel-@item.Id" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="viewModalLabel-@item.Id">Todo Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @item.Text
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+Pjp6Hba3t5ZZk3ewPeAo85rX4z9hdKqk5d56YgjI4fIrZhExLgiRTIYZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXlPi5JUj6jowhBUiAz3e5WrV5YLX5yVxw9cIB1i/7xr8+4MEjRPYBE8Rjh3" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgOTzV1KkZ9qq6xdwX4G8lFQQcXUtxptqfK5CR+vvYcHS2aG63R" crossorigin="anonymous"></script>
+}
+
+
+</body>
+</html>
